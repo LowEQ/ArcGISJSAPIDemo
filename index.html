@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "utf-8"/>
+        <meta name = "viewport" content = "initial-scale = 1, maximum-scale = 1, user-scalable = no"/>
+        <title>ArcGIS JavaScrip API demo</title>
+        <link rel="stylesheet" href="https://js.arcgis.com/4.13/esri/themes/light/main.css" />
+        <script src="https://js.arcgis.com/4.13/"></script><!--CND links for the js API -->
+        <style>
+            html,
+            body,
+            #viewDiv {
+              padding: 0;
+              margin: 0;
+              height: 100%;
+              width: 100%;
+            }
+        </style>
+        <script>
+/*----------Declare variables-------------------------------------------------------------------------*/
+            const cityAreaURL ="data/KokkolaCityArea.json";
+            const schoolURL ="data/schoolDataPoints.json";
+            const hospitalURL ="data/hospitalDataPoints.json";
+            const kindergardenURL = "data/kindergardenDataPoints.json";
+            const parkURL ="data/parkDataPoints.json";
+/*-----------Set up Popup-------------------------------------------------------------------------------------*/
+            //popuTemplate for City Area
+            const templateCityArea = {
+                title: "<h1>{city-area}</h1>",
+                content: "ID: {ID}<br> Population: {population}<br> Income: {income}<br> Outcome: {outcome}<br>",
+            };
+            //popuTemplate for Data coordinates
+            const templateDataPoint ={
+                title: "<h1>{placeName}<h1>",
+                content: "ID: {ID}<br> Population: {population}<br> Income: {income}<br>",
+            };
+/*----------Set up randerer for style the map----------------------------------------------------------------*/
+
+/*----------Init Map----------------------------------------------------------------------------------------*/
+            require([
+                "esri/Map",
+                "esri/views/MapView", 
+                "esri/layers/GeoJSONLayer",
+                ], function(
+                    Map, MapView, GeoJSONLayer){
+                var map = new Map({
+                    basemap: "streets",
+                });
+
+                var view = new MapView({
+                    container: "viewDiv",
+                    map:map,
+                    center: [23.130480,63.838482],
+                    zoom: 13
+                });
+/*------------Load layers throgh local host and add them to the map-------Add popups------------------------------------*/
+                
+
+                //create a Geojson data layer object named cityAreaLayer
+                var cityAreaLayer = new GeoJSONLayer({
+                    url:cityAreaURL,
+                    popupTemplate: templateCityArea,
+                    opacity: 0.3,
+                });
+                //add city Area layer as a geoJson layer
+                
+                map.add(cityAreaLayer,0);
+
+                //create a Geojson data layer object named schoolLayer
+                var schoolLayer = new GeoJSONLayer({
+                    url: schoolURL,
+                    popupTemplate:templateDataPoint,
+                });
+                //add school data layer
+                map.add(schoolLayer,1);
+                
+                //create a Geojson data layer object named hospitalLayer
+                var hospitalLayer = new GeoJSONLayer({
+                    url: hospitalURL,
+                    popupTemplate:templateDataPoint,
+                });
+                //add hospital Layer to the map
+                map.add(hospitalLayer,2);
+                //create a Geojson data layer object named kindergardenLayer
+                var kindergardenLayer = new GeoJSONLayer({
+                    url: kindergardenURL,
+                    popupTemplate:templateDataPoint,
+                });
+                //add kindergarden Layer to the map
+                map.add(kindergardenLayer,3);
+                //create a Geojson data layer object named parkLayer
+                var parkLayer = new GeoJSONLayer({
+                    url: parkURL,
+                    popupTemplate:templateDataPoint,
+                });
+                //add park Layer to the map
+                map.add(parkLayer,4);
+            });
+        </script>
+    </head>
+
+    <body>
+        <h1>ArcGIS JavaScrip API Demo</h1>
+        <div id = "viewDiv"></div>
+    </body>
+</html>
